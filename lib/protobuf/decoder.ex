@@ -13,6 +13,7 @@ defmodule Protobuf.Decoder do
   def decode(data, module) do
     kvs = raw_decode_key(data, [])
     %{repeated_fields: repeated_fields} = msg_props = module.__message_props__()
+    #struct = build_struct(kvs, msg_props, module.new())
     struct = build_struct(kvs, msg_props, %{})
     struct = Map.put(struct, :__msg__, module.new().__struct__)
 
@@ -430,8 +431,8 @@ defmodule Protobuf.Decoder do
     field
   end
 
-  defp try_decode_extension(%mod{} = struct, tag, wire, val) do
-    case Protobuf.Extension.get_extension_props_by_tag(mod, tag) do
+  defp try_decode_extension(%{} = struct, tag, wire, val) do
+    case Protobuf.Extension.get_extension_props_by_tag(__MODULE__, tag) do
       {ext_mod,
        %{
          field_props: %{
