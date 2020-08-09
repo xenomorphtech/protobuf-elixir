@@ -94,7 +94,7 @@ defmodule Protobuf.Encoder do
   def skip_field?(:proto3, 0, %{oneof: nil}), do: true
   def skip_field?(:proto3, 0.0, %{oneof: nil}), do: true
   def skip_field?(:proto3, "", %{oneof: nil}), do: true
-  def skip_field?(:proto3, false, %{oneof: nil}), do: true
+  #def skip_field?(:proto3, false, %{oneof: nil}), do: true
   def skip_field?(_, _, _), do: false
 
   @spec encode_field(atom, any, FieldProps.t()) :: iodata
