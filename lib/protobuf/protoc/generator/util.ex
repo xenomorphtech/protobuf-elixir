@@ -1,7 +1,12 @@
 defmodule Protobuf.Protoc.Generator.Util do
   @moduledoc false
   def trans_name(name) do
-    Macro.camelize(name)
+    is_upcase = fn <<x::binary-size(1), _::binary>> -> x == String.upcase(x) and x != "_" end
+    if is_upcase.(name) do
+      name
+    else
+      Macro.camelize(name)
+    end
   end
 
   def join_name(list) do
@@ -44,7 +49,7 @@ defmodule Protobuf.Protoc.Generator.Util do
   def normalize_type_name(name) do
     name
     |> String.split(".")
-    |> Enum.map(&Macro.camelize(&1))
+    |> Enum.map(&trans_name(&1))
     |> Enum.join(".")
   end
 
