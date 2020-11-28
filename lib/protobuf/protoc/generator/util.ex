@@ -1,6 +1,12 @@
 defmodule Protobuf.Protoc.Generator.Util do
   @moduledoc false
   def trans_name(name) do
+    is_upcase = fn <<x::binary-size(1), _::binary>> -> x == String.upcase(x) end
+    if is_upcase.(name) do
+      name
+    else
+      Macro.camelize(name)
+    end
     Macro.camelize(name)
   end
 
