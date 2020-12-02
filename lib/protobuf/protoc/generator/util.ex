@@ -23,7 +23,12 @@ defmodule Protobuf.Protoc.Generator.Util do
 
   defp attach_pkg(name, ""), do: name
   defp attach_pkg(name, nil), do: name
-  defp attach_pkg(name, pkg), do: normalize_type_name(pkg) <> "." <> name
+  defp attach_pkg(name = <<first_letter::binary-size(1), last_letters::binary>>, pkg) do
+    name = if first_letter == "_" do
+      last_letters
+    else name end
+    normalize_type_name(pkg) <> "." <> name
+  end
 
   def attach_raw_pkg(name, ""), do: name
   def attach_raw_pkg(name, nil), do: name
@@ -53,6 +58,10 @@ defmodule Protobuf.Protoc.Generator.Util do
     |> Enum.join(".")
   end
 
-  def print(v) when is_atom(v), do: inspect(v)
-  def print(v), do: v
+  def print(v) when is_atom(v) do
+    inspect(v)
+  end
+  def print(v) do
+    v
+  end
 end
