@@ -189,8 +189,10 @@ defmodule Protobuf.Protoc.Generator.Message do
 
     type = field_type_name(ctx, f)
 
+    name = Macro.underscore f.name
+
     %{
-      name: f.name,
+      name: name,
       number: f.number,
       label: label_name(f.label),
       type: type,
