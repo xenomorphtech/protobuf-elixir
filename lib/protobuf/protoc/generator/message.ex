@@ -99,7 +99,17 @@ defmodule Protobuf.Protoc.Generator.Message do
         fields ++ [%{name: :__pb_extensions__}]
       end
 
-    Enum.map_join(struct.oneof_decl ++ fields, ", ", fn f -> ":#{f.name}" end)
+    Enum.map_join(struct.oneof_decl ++ fields, ", ", fn f ->
+      ":#{
+        case f.name do
+          "__" <> _rest ->
+            f.name
+
+          _ ->
+            Macro.underscore(f.name)
+        end
+      }"
+    end)
   end
 
   def typespec_str([], [], []), do: "  @type t :: %__MODULE__{}\n"
@@ -189,7 +199,7 @@ defmodule Protobuf.Protoc.Generator.Message do
 
     type = field_type_name(ctx, f)
 
-    name = Macro.underscore f.name
+    name = Macro.underscore(f.name)
 
     %{
       name: name,
